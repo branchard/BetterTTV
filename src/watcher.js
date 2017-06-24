@@ -7,6 +7,8 @@ const $ = require('jquery');
 let route = '';
 let chatWatcher;
 let conversationWatcher;
+let clipsChatWatcher;
+let vodChatWatcher;
 let channel = {};
 const chatState = {
     slow: 0,
@@ -31,6 +33,7 @@ class Watcher extends SafeEventEmitter {
         this.routeObserver();
         this.clipsChatObserver();
         this.checkClips();
+        this.vodChatObserver();
 
         debug.log('Watcher started');
     }
@@ -78,11 +81,14 @@ class Watcher extends SafeEventEmitter {
                         this.emit('load.dashboard');
                         this.emit('load.chat');
                         break;
+                    case 'channel.index.index':
+                    case 'channel.index.post':
                     case 'channel.videos.video-type':
+                    case 'channel.clips.index':
+                    case 'channel.collections':
+                    case 'channel.events':
                     case 'channel.followers':
                     case 'channel.following':
-                    case 'channel.index.index':
-                    case 'channel.clips':
                         this.emit('load.channel');
                         // Switching between tabs in channel page
                         if (lastRoute.substr(0, 8) === 'channel.') break;
@@ -241,7 +247,7 @@ class Watcher extends SafeEventEmitter {
             watcher.observe(element, {childList: true, subtree: true});
         };
 
-        conversationWatcher = new window.MutationObserver(mutations =>
+        clipsChatWatcher = new window.MutationObserver(mutations =>
             mutations.forEach(mutation => {
                 for (const el of mutation.addedNodes) {
                     const $el = $(el);
@@ -253,7 +259,31 @@ class Watcher extends SafeEventEmitter {
             })
         );
 
-        this.on('load.clips', () => observe(conversationWatcher, $('body')[0]));
+        this.on('load.clips', () => observe(clipsChatWatcher, $('body')[0]));
+    }
+
+    vodChatObserver() {
+        const observe = (watcher, element) => {
+            if (!element) return;
+            if (watcher) watcher.disconnect();
+            watcher.observe(element, {childList: true, subtree: true});
+        };
+
+        vodChatWatcher = new window.MutationObserver(mutations =>
+            mutations.forEach(mutation => {
+                for (const el of mutation.addedNodes) {
+                    const $el = $(el);
+
+                    if ($el.hasClass('vod-message__content')) {
+                        this.emit('vod.message', $el);
+                    } else if ($el.hasClass('vod-message')) {
+                        $el.find('.vod-message__content').each((_, message) => this.emit('vod.message', $(message)));
+                    }
+                }
+            })
+        );
+
+        this.on('load.vod', () => observe(vodChatWatcher, $('.vod-chat')[0]));
     }
 }
 

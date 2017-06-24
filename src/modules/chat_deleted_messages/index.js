@@ -3,6 +3,8 @@ const watcher = require('../../watcher');
 const settings = require('../../settings');
 const Raven = require('raven-js');
 
+const CHAT_EMBER = '.chat-room > div';
+
 let twitchClearChat;
 function onClearChat(name, tags) {
     if (!name) {
@@ -50,6 +52,13 @@ function onClearChat(name, tags) {
                 }
             });
 
+        // Remove messages in the delayed message queue
+        const chatComponent = twitch.getEmberView($(CHAT_EMBER).attr('id'));
+        if (chatComponent && chatComponent.room) {
+            const filtered = chatComponent.room.delayedMessages.filter(msg => msg.from !== name);
+            chatComponent.room.set('delayedMessages', filtered);
+        }
+
         // this is a gross hack to show timeout messages without us having to implement them
         const currentChat = twitch.getCurrentChat();
         if (!currentChat) return;
@@ -87,13 +96,16 @@ class ChatDeletedMessagesModule {
         if (!currentChat || !currentChat.tmiRoom) return;
         const tmiRoom = currentChat.tmiRoom;
         const clearChatCallbacks = tmiRoom._events.clearchat;
-        if (!clearChatCallbacks || !clearChatCallbacks[0]) return;
-        if (clearChatCallbacks[0] !== onClearChat && !tmiRoom._bttvClearChatMonkeyPatched) {
-            twitchClearChat = clearChatCallbacks[0];
+        if (!clearChatCallbacks || !clearChatCallbacks.length) return;
+        const defaultClearChatCallback = clearChatCallbacks.find(c => c && c !== onClearChat);
+        if (defaultClearChatCallback && !tmiRoom._bttvClearChatMonkeyPatched) {
+            twitchClearChat = defaultClearChatCallback;
         }
         delete tmiRoom._events.clearchat;
         tmiRoom.on('clearchat', onClearChat);
         tmiRoom._bttvClearChatMonkeyPatched = true;
+
+        if (!currentChat.roomProperties) return;
         currentChat.set('roomProperties.hide_chat_links', false);
     }
 }

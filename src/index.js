@@ -1,8 +1,5 @@
 (() => {
-    if (!window._babelPolyfill) {
-        require('babel-polyfill');
-    }
-
+    if (!String.prototype.includes || !Array.prototype.findIndex) return;
     if (window.location.pathname.endsWith('.html')) return;
 
     const Raven = require('raven-js');
@@ -19,6 +16,12 @@
                     'InvalidAccessError',
                     'wrapped(betterttv)',
                     'Access is denied.',
+                    'container.className.match is not a function',
+                    'this exception cannot be caught',
+                    'Wrong length!',
+                    'Cannot read property \'value\' of undefined',
+                    '"onJsReady"',
+                    'Can\'t execute code from a freed script',
                     /^<anonymous> in/,
                     /^null$/,
                     /^undefined$/,
@@ -30,9 +33,13 @@
                     'tipsy is undefined',
                     'draggable is not a function',
                     'draggable is undefined',
+                    'jQuery is not a function',
+                    'unsupported pseudo: hover',
                     // Emote Menu
+                    'Getter already exists.',
                     'Cannot read property \'setChannelName\' of undefined',
-                    'l is undefined'
+                    '.getTime is not a function',
+                    '`callback` must be a function.'
                 ],
                 whitelistUrls: [
                     /betterttv\.js/,
@@ -41,7 +48,8 @@
                 shouldSendCallback: data => {
                     const exception = data.exception && data.exception.values[0];
                     if (data.message && data.message.includes('betterttv.js in wrap')) return false;
-                    if (data.culprit === 'wrapped(betterttv)') return false;
+                    if (data.message === 'out of memory') return;
+                    if (['betterttv in apply', 'wrapped(betterttv)'].contains(data.culprit)) return false;
                     if (exception && !exception.value) return false;
                     if (exception && ['NS_ERROR_NOT_INITIALIZED', 'NS_ERROR_OUT_OF_MEMORY', 'NS_ERROR_FAILURE'].includes(exception.type)) return true;
                     return true;

@@ -14,9 +14,10 @@ const SCROLL_INDICATOR_SELECTOR = '.view-clip__scrollButton';
 const SCROLL_CONTAINER_SELECTOR = '.view-clip__main';
 
 const $body = $('body');
+const $html = $('html');
 
 function parseColor(rgbText) {
-    const rgb = (rgbText.split(')')[0].split('rgb(')[1] || '').split(',');
+    const rgb = ((rgbText || '').split(')')[0].split('rgb(')[1] || '').split(',');
     const sanitize = c => parseInt((c || '0').trim(), 10);
     return {
         r: sanitize(rgb[0]),
@@ -34,7 +35,7 @@ function scrollOnEmoteLoad($el) {
     });
 }
 
-class GlobalCSSModule {
+class ClipsModule {
     constructor() {
         watcher.on('load.clips', () => this.load());
         watcher.on('clips.message', $el => this.parseMessage($el));
@@ -50,7 +51,7 @@ class GlobalCSSModule {
         }
 
         if (!settings.get(SETTING_KEY)) return;
-        $body.addClass(DARK_CLASS);
+        $html.addClass(DARK_CLASS);
     }
 
     darkenToggleButton() {
@@ -63,7 +64,7 @@ class GlobalCSSModule {
 
     toggleDarkMode() {
         const newValue = !(settings.get(SETTING_KEY) || false);
-        $body.toggleClass(DARK_CLASS, newValue);
+        $html.toggleClass(DARK_CLASS, newValue);
         settings.set(SETTING_KEY, newValue);
     }
 
@@ -79,4 +80,4 @@ class GlobalCSSModule {
     }
 }
 
-module.exports = new GlobalCSSModule();
+module.exports = new ClipsModule();

@@ -637,14 +637,14 @@ input.text:focus,select:focus,textarea:focus {
 }
 
 #bttvSettingsPanel #bttvAbout .aboutHalf {
-    width: -moz-calc(50% - 30px);
-    width: -webkit-calc(50% - 30px);
-    width: calc(50% - 30px);
+    width: -moz-calc(50% - 24px);
+    width: -webkit-calc(50% - 24px);
+    width: calc(50% - 24px);
     display: inline-block;
     float: left;
     background-color: rgb(35, 35, 35);
     border-radius: 3px;
-    margin: 10px;
+    margin: 12px;
     padding: 5px;
     text-align: center;
     height: 395px;
@@ -1025,7 +1025,8 @@ input, textarea, select {
     box-shadow: none;
     border-radius: 0;
     margin: 6px;
-    width: calc(100% - 10px);
+    padding: 6px;
+    width: calc(100% - 12px);
     display: none;
 }
 
@@ -2164,6 +2165,10 @@ body.channel_new.columns.ember-application {
     cursor: pointer !important;
 }
 
+.chatReplay .chat-messages .chat-line, .chatReplay .chat-messages .chat-line:hover {
+    overflow: visible;
+}
+
 /* host & playlist banner fix */
 .player-column .brick {
     border-left: 5px solid #6441a5 !important;
@@ -2182,7 +2187,9 @@ body.channel_new.columns.ember-application {
 }
 
 .ember-chat .chat-line .mentioning,
-.ember-chat .chat-line .mentioned {
+.ember-chat .chat-line .mentioned,
+.chat-container.dark .chat-line .mentioned,
+.ember-chat-container.dark .chat-line .mentioned {
     cursor: pointer;
     color: rgb(67, 63, 74);
     background-color: transparent;
@@ -2495,4 +2502,16 @@ body.channel_new.columns.ember-application {
     display: inline;
     line-height: 1.4;
     cursor: default;
+}
+
+/* vod chat */
+.vod-message__badge {
+    border-radius: 2px;
+}
+
+/* Changelog version headers */
+#bttvChangelog .tse-content h2 {
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-weight: bold;
 }

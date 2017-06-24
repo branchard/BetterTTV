@@ -336,17 +336,19 @@ div#site_header {
     color: #d3d3d3 !important;
 }
 
-#chat_text_input, #chat_text_login, .ember-chat .chat-interface textarea {
+#chat_text_input, #chat_text_login, .ember-chat .chat-interface textarea, .vod-chat textarea {
     background-color: rgb(20, 20, 20) !important;
     color: #D3D3D3;
     border: solid 1px #333 !important;
+    box-shadow: none;
     /*box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.05), 0px 1px 0px rgba(0, 0, 0, 0.15) inset;*/
     box-shadow: none;
 }
 
 #right_col, #right_col .content .top #right_nav, #right_col .content .top, #right_col .content .bottom #controls,
-.rightcol-content, #right_col .top #right_nav, #right_col .top, #right_col .bottom #controls, .ember-chat .chat-interface {
+.rightcol-content, #right_col .top #right_nav, #right_col .top, #right_col .bottom #controls, .ember-chat .chat-interface, .vod-chat__input {
     background-color: #282828 !important;
+    box-shadow: none;
     z-index: inherit;
 }
 
@@ -945,7 +947,9 @@ div#site_header {
 }
 
 .ember-chat .chat-line .mentioning,
-.ember-chat .chat-line .mentioned {
+.ember-chat .chat-line .mentioned,
+.chat-container.dark .chat-line .mentioned,
+.ember-chat-container.dark .chat-line .mentioned {
     color: #d3d3d3;
 }
 
@@ -1046,7 +1050,11 @@ div#site_header {
     color: #d3d3d3;
 }
 
-.tickets .ticket .benefits {
+.ticket__img {
+    background: #111;
+}
+
+.ticket__benefits {
     background: #222 !important;
     border: none !important;
 }
@@ -2133,7 +2141,7 @@ span.subscribe-text {
 .emoticon-selector .emoticon-selector-box,
 .emoticon-selector-container .emoticon-selector {
     background-color: #191919;
-    border-color: #191919;
+    box-shadow: inset 0 0 0 1px #191919;
 }
 
 .emoticon-selector .emoticon-selector-box .emoticon-selector__tabs,
@@ -2170,6 +2178,7 @@ span.subscribe-text {
     background-color: #282828;
     border-color: #444;
     color: #d3d3d3;
+    box-shadow: 0 0 3px 1px #333;
 }
 
 .emoticon-selector .emoticon-selector-box input:focus {
@@ -2348,6 +2357,9 @@ span.subscribe-text {
 /* conversations */
 
 /* conversations list icon */
+.conversations-content {
+    color: #d3d3d3;
+}
 .conversations-content .conversations-list {
     background-color: rgb(35,35,35);
     border-color: #0e0e0e;
@@ -2381,8 +2393,9 @@ span.subscribe-text {
 }
 
 .conversations-content .conversations-list-bottom-bar {
-    background-color: rgb(30,30,30);
+    background-color: #282828;
     border-color: #0e0e0e;
+    border-top-color: #292929;
 }
 .conversations-content .conversations-list-search-bar .text {
     background-color: rgb(20, 20, 20);
@@ -2393,6 +2406,10 @@ span.subscribe-text {
     box-shadow: 0 0 3px 1px #444;
     -moz-box-shadow: 0 0 3px 1px #444;
     -webkit-box-shadow: 0 0 3px 1px #444;
+}
+.conversations-content .conversations-list-search-bar input {
+    box-shadow: #303030 0 0 0 1px inset;
+    background-color: #202020;
 }
 
 .conversation-window .convoHeader {
@@ -2422,6 +2439,7 @@ span.subscribe-text {
 .conversations-content .conversation-window textarea {
     background-color: rgb(20, 20, 20);
     border: solid 1px #333;
+    box-shadow: none;
     color: #d3d3d3;
 }
 
@@ -2973,7 +2991,7 @@ ul.tabs li>a:hover, .directory_header .nav li>a:hover, ul.tabs li>button:hover, 
 .brick, .cn-bar__avatar-wrap {
     background-color: #141414 !important; /* because Twitch loves being !important */
     border-color: #141414;
-    border-top: none; 
+    border-top: none;
 }
 
 .cn-bar {
@@ -3086,16 +3104,26 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 }
 
 .button--hollow {
-    background-color: #6441a4;
-    color: white;
-    box-shadow: none;
+    color: #d3d3d3;
+    box-shadow: inset 0 0 0 1px #6441a4;
 }
 
 .button--hollow:focus,
 .button--hollow:hover {
-    color: white;
+    color: #d3d3d3;
     text-decoration: none;
-    background-color: #7d5bbe;
+    background-color: #6441a4;
+}
+
+.button--hollow.button--dropmenu:hover:after, .button--hollow.button--dropmenu:focus:after {
+    border: 5px solid #6441a4;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+}
+
+.button--icon.button--hollow:focus figure svg, .button--icon.button--hollow:hover figure svg {
+    fill: #d3d3d3;
 }
 
 .dash-tabs__item {
@@ -3273,6 +3301,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 /* social layout */
 .theme--dark .social-column {
     background-color: rgb(30,30,30);
+    box-shadow: none;
 }
 
 .theme--dark .sc-search {
@@ -3418,6 +3447,7 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 .activity-card {
     background-color: rgb(28, 28, 28);
     box-shadow: inset 0 0 0 1px #333;
+    color: #d3d3d3;
 }
 
 .activity-card__comments {
@@ -3435,12 +3465,13 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .activity-create {
     border-color: #333;
-    background-color: rgb(25, 25, 25);
+    background-color: rgb(25, 25, 25) !important;
 }
 
-.activity-create__textarea, .activity-create__textarea:focus {
+textarea.form__input.activity-create__textarea, textarea.form__input.activity-create__textarea:focus {
     color: #d3d3d3;
     background: none;
+    background-color: transparent;
     border-color: #333;
 }
 
@@ -3498,4 +3529,105 @@ button.follow-button, .subscription-modal__right button, .subscription-modal__le
 
 .game-details-igc__details {
     background-color: rgb(28, 28, 28);
+}
+
+/* vod chat */
+.vod-chat span {
+    color: #d3d3d3;
+}
+
+.vod-message.vod-message--focused, .vod-message:hover {
+    background-color: transparent;
+}
+
+.vod-chat__scroll-wrapper::-webkit-scrollbar-thumb{
+    border-color: #201c2b;
+}
+
+.offer-list__container>.ember-tether>.border-t {
+    border-top: .1rem solid #333;
+}
+
+.notification-center__header-text {
+    color: #D3D3D3;
+}
+
+.notification-center__header {
+    background-color: #1e1e1e;
+    border-bottom: .1rem solid #333;
+}
+
+.notification-center__subheader-text {
+    color: #D3D3D3;
+}
+
+.notification-center__subheader {
+    background-color: #1e1e1e;
+    border-bottom: .1rem solid #333;
+}
+
+.friend-requests__empty {
+    background-color: #1e1e1e;
+    border-bottom: .1rem solid #333;
+}
+
+.notification-center__empty {
+    background-color: #1e1e1e
+    border-bottom: .1rem solid #333;
+}
+
+.notification-center__footer {
+    background-color: #1e1e1e;
+    border-top: .1rem solid #333;
+}
+
+.notification__container.notification--read {
+    background-color: #1e1e1e;
+    border-bottom: .1rem solid #333;
+}
+
+.notification__container.notification--unread {
+    background-color: #323232;
+    border-bottom: .1rem solid #333;
+}
+
+.notification-center__core {
+    background-color: #1e1e1e;
+}
+
+.notification__container:hover {
+    background-color: #464646;
+}
+
+.notification__container #Oval {
+    fill: #1e1e1e;
+}
+
+.notification-center__subheader-unread-count {
+    background-color: #323232;
+}
+
+.notification-center__subheader-unread-count>span {
+    color: #D3D3D3;
+}
+
+.notification__empty{
+    background-color: #1e1e1e;
+}
+
+.notification-center__core--empty {
+    background-color: #1e1e1e;
+}
+
+.friend-request__action--icon > .icon > svg.svg-ban {
+    fill: white;
+}
+
+.friend-request__action--icon {
+    background-color: inherit;
+    box-shadow: inset 0 0 0 1px #323232;
+}
+
+.notification-center__header .button:hover {
+    color:#D3D3D3
 }

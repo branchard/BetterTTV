@@ -21,13 +21,13 @@ const STATES = {
 
 let state = STATES.CLOSED;
 
-function getUserChatMessages(id) {
+function getUserChatMessages(id, name) {
     return $.makeArray($(CHAT_LINE_SELECTOR))
         .reverse()
         .filter(m => {
             const messageObj = twitch.getChatMessageObject(m);
             if (!messageObj || !messageObj.tags) return false;
-            return messageObj.tags['user-id'] === id;
+            return messageObj.tags['user-id'] === id || messageObj.from === name;
         });
 }
 
@@ -60,6 +60,14 @@ function toggleFollow($modCard, value) {
         value = $modCard.find('.mod-card-follow').text() !== 'Unfollow';
     }
     $modCard.find('.mod-card-follow').text(value ? 'Unfollow' : 'Follow');
+    return value;
+}
+
+function toggleFriend($modCard, value) {
+    if (value === undefined) {
+        value = $modCard.find('.mod-card-friend').text() !== 'Unfriend';
+    }
+    $modCard.find('.mod-card-friend').text(value ? 'Unfriend' : 'Friend');
     return value;
 }
 
@@ -131,6 +139,35 @@ function renderModeratorCard(user, $el) {
             request.then(() => twitch.sendChatAdminMessage(`You ${!followed ? 'un' : ''}followed ${user.name}`))
                 .catch(() => twitch.sendChatAdminMessage(`Error ${!followed ? 'un' : ''}following ${user.name}`));
         });
+
+        const store = twitch.getEmberContainer('service:store');
+        if (store) {
+            if (store.peekRecord('friends-list-user', user.id)) {
+                toggleFriend($modCard, true);
+            } else {
+                toggleFriend($modCard, false);
+            }
+
+            $modCard.find('.mod-card-friend').click(() => {
+                const friended = toggleFriend($modCard);
+
+                const action = !friended ? (
+                    store.queryRecord('friends-list-user', {
+                        type: 'unfriend',
+                        id: user.id,
+                        login: user.name
+                    })
+                ) : (
+                    store.createRecord('friends-list-request', {
+                        friendId: user.id,
+                        friendLogin: user.name
+                    }).save()
+                );
+
+                action.then(() => twitch.sendChatAdminMessage(`You ${!friended ? 'un' : ''}friended ${user.name}`))
+                    .catch(() => twitch.sendChatAdminMessage(`Error ${!friended ? 'un' : ''}friending ${user.name}`));
+            });
+        }
     }
 
     // use Twitch jQuery for Draggable
@@ -189,7 +226,7 @@ class ChatModeratorCardsModule {
                     user.id = user._id;
                     delete user._id;
                     // adds in user messages from chat
-                    user.messages = getUserChatMessages(id);
+                    user.messages = getUserChatMessages(id, user.name);
                     renderModeratorCard(user, $el);
                     $('body').on('keydown.modCard', e => this.onKeyDown(e, user));
                 }, elapsed < 250 ? 250 - elapsed : 0);
